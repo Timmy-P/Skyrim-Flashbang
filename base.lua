@@ -87,14 +87,15 @@ if CoreEnvironmentControllerManager then
 	Hooks:PostHook(CoreEnvironmentControllerManager, "_handle_screenflash", __Name("_handle_screenflash"), function(self, flashbang_value)
 		--Debug solution to see the flashbang value
 		--This function is called, like, a lot of times per second. This is a quick and dirty solution to print to chat once every 10 function calls
-		--anti_spam = anti_spam + 1
-		--if anti_spam % 10 == 0 then
-			--managers.chat:_receive_message(managers.chat.GAME, "de_banger", "bang_val = ".. flashbang_value, Color(255, 0, 170, 255) / 255)
-		--end
+		--[[
+		anti_spam = anti_spam + 1
+		if anti_spam % 10 == 0 then
+			managers.chat:_receive_message(managers.chat.GAME, "de_banger", "bang_val = ".. flashbang_value, Color(255, 0, 170, 255) / 255)
+		end]]--
 
 		--flashbang_value is tied to the opacity of the screen flash effect, I've found. Being lazy and just plugging it into the alpha
 		--of the bitmap worked for me. Non-zero check is needed so avoid nil values.
-		if flashbang_value > 0 then
+		if flashbang_value >= 0 then
 			_G[ThisBitmap]:set_alpha(flashbang_value)
 			--Making sure not to override user preference on volume
 			if flashbang_value < FlashBMemes.Options:GetValue("__volume_start") or flashbang_value < 1 then
@@ -112,10 +113,10 @@ if CoreEnvironmentControllerManager then
 		
 	end)
 end
-
+--is_closed() was just there this whole time I'm so sorry-
 if PlayerDamage then
 	Hooks:PostHook(PlayerDamage, "update", __Name("update"), function(self)
-		if _G[_GName][XAudioSource] and not _G[_GName][XAudioSource]:is_active() then
+		if _G[_GName][XAudioSource]:is_closed ~= true _G[_GName][XAudioSource] and not _G[_GName][XAudioSource]:is_active() then
 			--__end_ogg()
 			__end_pic()
 		end
